@@ -7,8 +7,6 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
-  Pause,
-  Play,
   CheckCircle2,
   Sparkles,
   Terminal,
@@ -317,80 +315,13 @@ export function AppleHeroSlider() {
         className="pointer-events-none absolute inset-x-0 -top-40 h-[520px] bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(0,113,227,0.11),transparent_70%)]"
       />
 
-      <div className="container-editorial relative z-10 space-y-8">
-        {/* Top Apple-Style Segmented Category Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div
-            role="tablist"
-            aria-label="Choose capability slide"
-            className="apple-glass inline-flex flex-wrap items-center gap-1.5 rounded-full border border-border p-1.5 shadow-2xs"
-          >
-            {HERO_SLIDES.map((slide, idx) => {
-              const isSelected = idx === activeIndex;
-              return (
-                <button
-                  key={slide.id}
-                  role="tab"
-                  type="button"
-                  aria-selected={isSelected}
-                  aria-controls={`hero-slide-panel-${slide.id}`}
-                  onClick={() => goToSlide(idx)}
-                  className={`relative rounded-full px-3.5 py-1.5 text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[36px] ${
-                    isSelected
-                      ? "bg-foreground text-background shadow-2xs"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {slide.tabLabel}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Direct Playback & Arrow Controls (Apple-style pill) */}
-          <div className="apple-glass inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1.5">
-            <button
-              type="button"
-              onClick={() => setIsPlaying((prev) => !prev)}
-              aria-label={
-                isPlaying ? "Pause hero slideshow" : "Play hero slideshow"
-              }
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-foreground hover:bg-surface-muted transition-colors cursor-pointer"
-            >
-              {isPlaying ? (
-                <Pause className="h-3.5 w-3.5" aria-hidden="true" />
-              ) : (
-                <Play className="h-3.5 w-3.5" aria-hidden="true" />
-              )}
-            </button>
-            <div className="h-4 w-px bg-border" aria-hidden="true" />
-            <button
-              type="button"
-              onClick={handlePrev}
-              aria-label="Previous slide"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-foreground hover:bg-surface-muted transition-colors cursor-pointer"
-            >
-              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-            </button>
-            <span className="px-1.5 text-xs font-mono text-muted-foreground">
-              0{activeIndex + 1} / 0{HERO_SLIDES.length}
-            </span>
-            <button
-              type="button"
-              onClick={handleNext}
-              aria-label="Next slide"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-foreground hover:bg-surface-muted transition-colors cursor-pointer"
-            >
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </div>
-        </div>
-
+      <div className="container-editorial relative z-10">
         {/* Main Hero Slider Stage */}
         <div
           id={`hero-slide-panel-${currentSlide.id}`}
-          role="tabpanel"
-          aria-live={isPlaying ? "off" : "polite"}
+          role="region"
+          aria-label="Hero capability showcase"
+          aria-live="polite"
           className="relative rounded-[1.75rem] border border-border bg-surface shadow-[0_24px_60px_-15px_rgba(0,0,0,0.07)] overflow-hidden"
         >
           {/* Top GSAP Live Progress Line */}
@@ -555,21 +486,39 @@ export function AppleHeroSlider() {
               </span>
             </div>
 
-            {/* Apple Dot Indicators */}
-            <div className="flex items-center gap-2 self-start md:self-auto">
-              {HERO_SLIDES.map((s, idx) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  aria-label={`Go to slide ${idx + 1}: ${s.tabLabel}`}
-                  onClick={() => goToSlide(idx)}
-                  className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                    idx === activeIndex
-                      ? "w-8 bg-primary"
-                      : "w-2.5 bg-border hover:bg-muted-foreground"
-                  }`}
-                />
-              ))}
+            {/* Slide Navigation Controls */}
+            <div className="flex items-center gap-2.5 self-start md:self-auto">
+              <button
+                type="button"
+                onClick={handlePrev}
+                aria-label="Previous slide"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface transition-colors cursor-pointer"
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+              </button>
+              <div className="flex items-center gap-1.5 px-1">
+                {HERO_SLIDES.map((s, idx) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    aria-label={`Go to slide ${idx + 1}: ${s.tabLabel}`}
+                    onClick={() => goToSlide(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                      idx === activeIndex
+                        ? "w-7 bg-primary"
+                        : "w-2 bg-border hover:bg-muted-foreground"
+                    }`}
+                  />
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={handleNext}
+                aria-label="Next slide"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface transition-colors cursor-pointer"
+              >
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </button>
             </div>
           </div>
         </div>
