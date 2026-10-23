@@ -51,8 +51,7 @@ const HERO_SLIDES: HeroSlide[] = [
     id: "engineering-partner",
     eyebrow: "Webntric Software • Engineering & Digital Growth",
     tabLabel: "Overview",
-    headline:
-      "Practical software, credible websites, and steady digital growth for businesses ready to run better.",
+    headline: "Practical Software and Websites Built for Growth",
     subtitle:
       "We help startups, local enterprises, and growing organizations replace manual bottlenecks with dependable custom software, offline Windows billing systems, fast web & mobile apps, and search-led growth.",
     imageSrc: "/images/home/webntric-business-technology-team.webp",
@@ -82,8 +81,7 @@ const HERO_SLIDES: HeroSlide[] = [
     id: "offline-windows-pos",
     eyebrow: "Offline Windows Desktop & GST Billing",
     tabLabel: "Offline POS & Billing",
-    headline:
-      "Counter billing and stock control that never freeze when the internet drops.",
+    headline: "Offline Billing and Inventory That Never Stops",
     subtitle:
       "Engineered for high-volume retail counters, wholesale mandis, pharmacies, and clinics. Generate thermal or A4 GST invoices in under 4 seconds with 100% local SQLite/SQL Server reliability.",
     imageSrc: "/images/services/retail-pos-counter-operation.webp",
@@ -111,8 +109,7 @@ const HERO_SLIDES: HeroSlide[] = [
     id: "websites-and-webapps",
     eyebrow: "High-Trust Websites & Web Applications",
     tabLabel: "Websites & Portals",
-    headline:
-      "Look like the established leader when customers, partners, and buyers check you online.",
+    headline: "High-Performance Websites and Portals Built to Convert",
     subtitle:
       "We build custom Next.js websites, customer portals, and Android/iOS mobile applications engineered for sub-2-second mobile load times, clear positioning, and frictionless enquiry capture.",
     imageSrc: "/images/home/outcome-credibility-websites-apps.webp",
@@ -138,8 +135,7 @@ const HERO_SLIDES: HeroSlide[] = [
     id: "custom-erp-operations",
     eyebrow: "Custom Business Software & Automation",
     tabLabel: "Custom ERP",
-    headline:
-      "Replace paper registers and WhatsApp chaos with software shaped around your staff.",
+    headline: "Custom Business Software Shaped Around Your Team",
     subtitle:
       "From multi-branch distributor order portals and school fee installment systems to manufacturing BOM trackers, we build role-based internal software that matches how your team actually works.",
     imageSrc: "/images/home/outcome-efficiency-offline-pos-erp.webp",
@@ -165,8 +161,7 @@ const HERO_SLIDES: HeroSlide[] = [
     id: "search-and-growth",
     eyebrow: "SEO, Content Systems & Lead Generation",
     tabLabel: "SEO & Growth",
-    headline:
-      "Turn high-intent searchers into steady, trackable customer enquiries.",
+    headline: "Turn Search Intent Into Qualified Customer Leads",
     subtitle:
       "Stop wasting budget on vanity clicks. We combine technical SEO, local Google Business Profile authority, structured social media content, and conversion landing pages to grow your pipeline.",
     imageSrc: "/images/services/seo-analytics-review-meeting.webp",
