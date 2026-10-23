@@ -599,39 +599,27 @@ export default function Navbar() {
           >
             Insights
           </Link>
+
+          <Link
+            href="/contact"
+            aria-current={pathname === "/contact" ? "page" : undefined}
+            className={`px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              pathname === "/contact"
+                ? "text-primary font-semibold"
+                : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+            }`}
+          >
+            Contact
+          </Link>
         </nav>
 
         {/* Desktop Right Actions */}
-        <div className="hidden xl:flex items-center gap-3 shrink-0">
+        <div className="hidden xl:flex items-center shrink-0">
           <ThemeToggle />
-          <Link
-            href="/contact"
-            onClick={() =>
-              trackEvent("cta_clicked", {
-                location: "header",
-                label: "Discuss your business",
-              })
-            }
-            className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
-          >
-            Discuss your business
-          </Link>
         </div>
 
         {/* Mobile & Tablet Controls (< 1280px) */}
         <div className="flex xl:hidden items-center gap-2 shrink-0">
-          <Link
-            href="/contact"
-            onClick={() =>
-              trackEvent("cta_clicked", {
-                location: "header_mobile_compact",
-                label: "Start a conversation",
-              })
-            }
-            className="hidden sm:inline-flex items-center justify-center h-10 px-3.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
-          >
-            Start a conversation
-          </Link>
           <ThemeToggle />
           <button
             type="button"
