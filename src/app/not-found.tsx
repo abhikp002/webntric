@@ -1,45 +1,42 @@
-"use client";
-
-import React from "react";
 import Link from "next/link";
-import { ArrowLeft, Sparkles, Code } from "lucide-react";
-import ScrollReveal from "@/components/scroll-reveal";
-import AnimatedText from "@/components/animated-text";
+import { ArrowRight, Compass } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="flex-grow flex items-center justify-center pt-28 pb-16 px-6 relative overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none">
-        <div className="w-[300px] h-[300px] rounded-full bg-primary/10 blur-[80px] md:blur-[120px] animate-pulse-slow"></div>
-      </div>
-
-      <div className="max-w-md mx-auto text-center space-y-6 relative z-10">
-        <ScrollReveal direction="down">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/80 border border-border text-xs font-semibold text-primary w-fit mx-auto">
-            <Sparkles className="h-3.5 w-3.5" /> 404 Error
-          </div>
-        </ScrollReveal>
-
-        <AnimatedText
-          text="Page Not Found"
-          className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground"
-        />
-
-        <ScrollReveal delay={0.2}>
-          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-            The page route you requested does not exist or has been relocated to another directory configuration.
-          </p>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.3} className="pt-2">
+    <div className="bg-background py-20 sm:py-28">
+      <div className="container-editorial max-w-2xl text-center space-y-6">
+        <span className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-primary font-semibold px-3 py-1 rounded bg-primary/10">
+          <Compass className="w-3.5 h-3.5" aria-hidden="true" />
+          404 — Page Not Found
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
+          The page you are looking for has moved or does not exist.
+        </h1>
+        <p className="text-base text-muted-foreground leading-relaxed">
+          Explore our core software, website, and digital growth capabilities or
+          return to the Webntric Software homepage below.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/95 transition-all shadow-lg shadow-primary/20"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-hover transition-colors"
           >
-            <ArrowLeft className="h-4 w-4" /> Return to Homepage
+            Return to Homepage
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
-        </ScrollReveal>
+          <Link
+            href="/services"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-surface text-foreground border border-border text-sm font-semibold hover:bg-surface-muted transition-colors"
+          >
+            Browse All 13 Services
+          </Link>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-surface text-foreground border border-border text-sm font-semibold hover:bg-surface-muted transition-colors"
+          >
+            Contact Us
+          </Link>
+        </div>
       </div>
     </div>
   );

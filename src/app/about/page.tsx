@@ -1,231 +1,297 @@
-"use client";
+import type { Metadata } from "next";
+import Link from "next/link";
+import {
+  ArrowRight,
+  CheckCircle2,
+  MapPin,
+  ShieldCheck,
+  Terminal,
+  Users,
+} from "lucide-react";
+import { buildMetadata } from "@/lib/seo";
+import { SITE_CONFIG } from "@/data/site-config";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { ResponsiveFigure } from "@/components/responsive-figure";
 
-import React from "react";
-import { Compass, Lightbulb, PenTool, Code, CheckCircle, Rocket, ShieldCheck, Heart, Sparkles, TrendingUp, Cpu, Layers } from "lucide-react";
-import ScrollReveal from "@/components/scroll-reveal";
-import AnimatedText from "@/components/animated-text";
+export const metadata: Metadata = buildMetadata({
+  title:
+    "About Webntric Software | Technology & Digital Growth Partner",
+  description:
+    "Learn how Webntric Software builds dependable websites, offline Windows software, custom billing systems, and digital growth engines.",
+  path: "/about",
+  keywords: [
+    "about Webntric Software",
+    "software development company",
+    "custom business software and digital agency",
+  ],
+});
 
-const valuesList = [
+const PRINCIPLES = [
   {
-    title: "Innovation First",
-    desc: "We continuously adapt to the latest tech frameworks, selecting optimized configurations that ensure speed and safety.",
-    icon: Lightbulb,
-    color: "text-amber-500",
-    bg: "bg-amber-500/10",
+    title: "Solve the operational bottleneck first",
+    description:
+      "Before proposing a framework or marketing campaign, we study where your daily operation loses time or trust—whether that is a slow billing counter, a confusing website, or manual stock registers.",
   },
   {
-    title: "Uncompromising Quality",
-    desc: "We write clean, production-ready code with absolute attention to detail, styling grids, and accessibility benchmarks.",
-    icon: ShieldCheck,
-    color: "text-emerald-500",
-    bg: "bg-emerald-500/10",
+    title: "Right-size technology to real working conditions",
+    description:
+      "In many retail counters, wholesale godowns, and clinics, internet connectivity fluctuates. Where offline speed matters, we build native Windows desktop systems; where multi-branch cloud access matters, we engineer resilient web and mobile apps.",
   },
   {
-    title: "Absolute Transparency",
-    desc: "No developer jargon or hidden costs. We present clear project workflows, milestones, and daily tracking lists.",
-    icon: Compass,
-    color: "text-indigo-500",
-    bg: "bg-indigo-500/10",
+    title: "Keep engineering and customer growth connected",
+    description:
+      "A fast website is more effective when paired with sound technical SEO, and paid lead generation works best when enquiries flow directly into a clean follow-up workflow.",
   },
   {
-    title: "Business-Driven Focus",
-    desc: "We build features that solve real bottlenecks, improve customer conversion funnel metrics, and generate real growth.",
-    icon: TrendingUp,
-    color: "text-rose-500",
-    bg: "bg-rose-500/10",
+    title: "Speak plainly and document every scope",
+    description:
+      "We do not hide behind buzzwords. Every project begins with a written scope document detailing what is included, how milestones work, and what you will own upon completion.",
   },
 ];
 
-const processSteps = [
-  {
-    num: "01",
-    phase: "Discover",
-    title: "Deep Dive Research",
-    desc: "We study your business operations, target demographics, and product limitations to establish clear goals.",
-    icon: Compass,
-  },
-  {
-    num: "02",
-    phase: "Strategize",
-    title: "Architecture & Tech Selection",
-    desc: "We map page route structures, database relations, SEO indexes, and select appropriate libraries.",
-    icon: Layers,
-  },
-  {
-    num: "03",
-    phase: "Design",
-    title: "High-Fidelity UI/UX Layouts",
-    desc: "We craft custom design systems, responsive palettes, micro-animations, and accessible user journeys.",
-    icon: PenTool,
-  },
-  {
-    num: "04",
-    phase: "Develop",
-    title: "Clean Production Engineering",
-    desc: "We write strict TypeScript, perform modular component nesting, and build lightning-fast web applications.",
-    icon: Code,
-  },
-  {
-    num: "05",
-    phase: "Test",
-    title: "QA Auditing",
-    desc: "We audit core web vitals, execute cross-browser responsiveness checks, and evaluate security rules.",
-    icon: CheckCircle,
-  },
-  {
-    num: "06",
-    phase: "Launch",
-    title: "Safe Server Deployment",
-    desc: "We set up build pipelines, structure DNS rules, launch sitemaps, and deploy to modern edge-servers.",
-    icon: Rocket,
-  },
-  {
-    num: "07",
-    phase: "Grow",
-    title: "Continuous Partnership",
-    desc: "We run monthly maintenance patches, analyze ranking trends, and support backend expansion.",
-    icon: Sparkles,
-  },
+const DELIVERY_STANDARDS = [
+  "Written requirement & milestone sign-off before coding starts",
+  "Version-controlled source code and structured database migrations",
+  "Keyboard-first UI ergonomics for high-volume billing and data-entry staff",
+  "Sub-2-second mobile page load targets and WCAG 2.2 AA accessibility discipline",
+  "Automated local and cloud database backup routines",
+  "Direct post-launch engineering support without middleman ticket queues",
 ];
 
-export default function About() {
+export default function AboutPage() {
   return (
-    <div className="overflow-hidden">
-      {/* Hero Banner */}
-      <section className="relative pt-32 pb-16 px-6 bg-secondary/10">
-        <div className="max-w-4xl mx-auto text-center flex flex-col gap-6">
-          <ScrollReveal direction="down">
-            <span className="text-xs uppercase tracking-wider text-primary font-bold">About Us</span>
-          </ScrollReveal>
-          <AnimatedText
-            text="Technology Built With Purpose."
-            className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground"
-          />
-          <ScrollReveal delay={0.2}>
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Webntric Software is a specialized software development company. We design and engineer corporate web platforms, mobile apps, offline business databases, and SEO structures focused on business results.
-            </p>
-          </ScrollReveal>
-        </div>
-      </section>
+    <div className="bg-background">
+      {/* HERO */}
+      <section className="pt-8 pb-14 sm:pt-12 sm:pb-20 border-b border-border">
+        <div className="container-editorial space-y-6">
+          <Breadcrumbs items={[{ name: "About Webntric", path: "/about" }]} />
 
-      {/* Narrative Section */}
-      <section className="py-20 md:py-24 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        {/* Left Column: Who We Are & Beliefs */}
-        <div className="lg:col-span-7 space-y-10">
-          <ScrollReveal className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">Who We Are</h2>
-            <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-              Founded on the belief that digital platforms should be beautiful, secure, and fast, Webntric Software delivers premium custom software. We do not work with cheap templates or bloated codebase layouts. Every project is built from the ground up, utilizing modern software patterns.
-            </p>
-            <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-              Our engineering team is composed of multidisciplinary specialists in React architectures, native mobile platforms, offline databases, and search visibility. We are committed to building long-term technology partnerships.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">What We Believe</h2>
-            <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-              We believe a company's website or application is its primary asset. It must communicate trust instantly. We design elegant typography structures, maintain strict contrast compliance, and optimize layout transitions to elevate your company above template-based competition.
-            </p>
-          </ScrollReveal>
-        </div>
-
-        {/* Right Column: Mission & Vision */}
-        <div className="lg:col-span-5 space-y-6">
-          <ScrollReveal className="p-8 bg-card border border-border rounded-3xl glow-indigo space-y-4">
-            <Heart className="h-8 w-8 text-primary" />
-            <h3 className="text-lg font-bold">Our Mission</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              To empower companies to work smarter, capture wider audiences, and sustain business scale by providing production-ready custom technology solutions and data-driven marketing.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal className="p-8 bg-card border border-border rounded-3xl glow-violet space-y-4" delay={0.1}>
-            <Cpu className="h-8 w-8 text-indigo-400" />
-            <h3 className="text-lg font-bold">Our Vision</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              To become a globally recognized digital engineering partner, establishing the benchmark for design craftsmanship, technical optimization, and transparent corporate reliability.
-            </p>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Values Grid */}
-      <section className="py-20 bg-secondary/15 border-y border-border px-6">
-        <div className="max-w-7xl mx-auto">
-          <ScrollReveal className="text-center max-w-xl mx-auto mb-16">
-            <span className="text-xs uppercase tracking-wider text-primary font-bold">Our Culture</span>
-            <h2 className="text-3xl font-extrabold tracking-tight mt-2">Why Choose Webntric</h2>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {valuesList.map((val, index) => (
-              <ScrollReveal
-                key={val.title}
-                direction="up"
-                delay={index * 0.05}
-                className="p-6 bg-card border border-border rounded-2xl flex flex-col justify-between hover:shadow-md transition-all group"
-              >
-                <div>
-                  <div className={`p-3 rounded-xl ${val.bg} ${val.color} w-fit group-hover:scale-105 transition-transform`}>
-                    <val.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-base font-bold text-foreground mt-5">{val.title}</h3>
-                  <p className="text-xs text-muted-foreground mt-3 leading-relaxed">{val.desc}</p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Process Timeline Section */}
-      <section className="py-20 md:py-28 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-xl mx-auto mb-20">
-            <ScrollReveal>
-              <span className="text-xs uppercase tracking-wider text-primary font-bold">Workflow</span>
-              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mt-2 text-foreground">
-                Our Proven Process
-              </h2>
-              <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-                A structured, transparent roadmap from initial audit to post-launch optimization.
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="lg:col-span-7 space-y-4">
+              <span className="text-xs font-mono uppercase tracking-wider text-primary font-semibold">
+                About Webntric Software
+              </span>
+              <h1 className="font-bold text-foreground tracking-tight">
+                A practical technology and digital growth partner built for
+                long-term business reliability.
+              </h1>
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+                Webntric Software works with founders, business owners, and
+                institutional leaders who want dependable software, credible
+                websites, and measurable customer acquisition—without agency
+                hype.
               </p>
-            </ScrollReveal>
+            </div>
+
+            <div className="lg:col-span-5">
+              <ResponsiveFigure
+                src="/images/team/webntric-engineering-collaboration.webp"
+                alt="Software engineers collaborating on system architecture and code review at a shared workstation"
+                width={1000}
+                height={680}
+                aspectRatio="16/10"
+                priority
+                sizes="(max-width: 1023px) 100vw, 480px"
+                caption="Engineering and digital strategy under one roof."
+                creditCreator="Christina @ wocintechchat.com"
+                creditSourceUrl="https://unsplash.com/photos/two-women-looking-at-the-code-at-laptop-glRqyWJgUeY"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY WE EXIST & HOW WE DIFFER */}
+      <section className="section-padding border-b border-border bg-surface-muted/40">
+        <div className="container-editorial grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <div className="lg:col-span-7 space-y-5">
+            <span className="text-xs font-mono uppercase tracking-wider text-primary font-semibold">
+              Our Perspective
+            </span>
+            <h2 className="font-bold text-foreground">
+              Why we bring software engineering, offline systems, and digital
+              growth under one roof.
+            </h2>
+            <p className="text-base text-muted-foreground leading-relaxed">
+              Most businesses are forced to choose between two disconnected
+              vendors: a design agency that builds a surface-level website with
+              no understanding of billing or inventory operations, or a software
+              vendor that delivers a rigid utility with zero attention to
+              usability and customer acquisition.
+            </p>
+            <p className="text-base text-muted-foreground leading-relaxed">
+              Webntric Software bridges both worlds. Our team engineers custom
+              business software—including native offline Windows POS and
+              inventory applications, multi-role web portals, and mobile
+              apps—while also building the high-trust websites, search
+              foundations, and digital marketing systems that bring customers
+              through your door.
+            </p>
+            <p className="text-base text-muted-foreground leading-relaxed">
+              Whether we are helping a traditional wholesale business move from
+              handwritten registers to barcode billing, or helping a growing
+              company launch a custom web platform, our goal is simple: build
+              tools your staff actually enjoy using and systems your customers
+              immediately trust.
+            </p>
           </div>
 
-          {/* Interactive timeline list */}
-          <div className="relative border-l border-border/80 ml-4 md:ml-12 space-y-16">
-            {processSteps.map((step, index) => (
-              <ScrollReveal
-                key={step.phase}
-                direction="left"
-                delay={index * 0.05}
-                className="relative pl-10 md:pl-16 group"
-              >
-                {/* Timeline Circle Bullet */}
-                <div className="absolute left-[-17px] top-1.5 w-8 h-8 rounded-full border-2 border-border bg-background group-hover:border-primary group-hover:bg-primary/5 transition-all flex items-center justify-center text-xs font-bold text-muted-foreground group-hover:text-primary z-10">
-                  {step.num}
-                </div>
+          <aside className="lg:col-span-5 bg-surface border border-border rounded-xl p-6 sm:p-8 space-y-6 shadow-sm">
+            <div className="space-y-2 pb-4 border-b border-border">
+              <span className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-primary font-semibold">
+                <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
+                Registered Office Address
+              </span>
+              <h3 className="text-lg font-bold text-foreground">
+                Engineering & Strategy Headquarters
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {SITE_CONFIG.address.full}
+              </p>
+            </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
-                  <div className="lg:col-span-4">
-                    <span className="text-xs font-bold uppercase tracking-widest text-primary">
-                      {step.phase}
-                    </span>
-                    <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors mt-1">
-                      {step.title}
-                    </h3>
-                  </div>
-                  <div className="lg:col-span-8">
-                    <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
-                      {step.desc}
-                    </p>
-                  </div>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-start gap-3">
+                <Terminal
+                  className="w-4 h-4 text-primary shrink-0 mt-1"
+                  aria-hidden="true"
+                />
+                <div>
+                  <strong className="text-foreground block">
+                    Full-Stack Engineering
+                  </strong>
+                  <span className="text-muted-foreground text-xs">
+                    Next.js, React, TypeScript, Node.js, C# / .NET, Flutter,
+                    PostgreSQL, MS SQL Server, SQLite
+                  </span>
                 </div>
-              </ScrollReveal>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Users
+                  className="w-4 h-4 text-primary shrink-0 mt-1"
+                  aria-hidden="true"
+                />
+                <div>
+                  <strong className="text-foreground block">
+                    Direct Senior Collaboration
+                  </strong>
+                  <span className="text-muted-foreground text-xs">
+                    You communicate directly with the engineers and strategists
+                    responsible for your project.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <ShieldCheck
+                  className="w-4 h-4 text-primary shrink-0 mt-1"
+                  aria-hidden="true"
+                />
+                <div>
+                  <strong className="text-foreground block">
+                    Long-Term Accountability
+                  </strong>
+                  <span className="text-muted-foreground text-xs">
+                    Structured onboarding, encrypted backups, and ongoing
+                    maintenance plans after go-live.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      {/* OPERATING PRINCIPLES */}
+      <section className="section-padding border-b border-border bg-background">
+        <div className="container-editorial space-y-10">
+          <div className="max-w-3xl space-y-2">
+            <span className="text-xs font-mono uppercase tracking-wider text-primary font-semibold">
+              Operating Principles
+            </span>
+            <h2 className="font-bold text-foreground">
+              How we make technical and commercial decisions.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {PRINCIPLES.map((item, idx) => (
+              <div
+                key={item.title}
+                className="bg-surface border border-border rounded-xl p-6 space-y-2.5 h-full"
+              >
+                <span className="text-xs font-mono font-bold text-primary">
+                  PRINCIPLE 0{idx + 1}
+                </span>
+                <h3 className="text-lg font-bold text-foreground">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ENGINEERING & DELIVERY STANDARDS */}
+      <section className="section-padding bg-surface-muted/40">
+        <div className="container-editorial space-y-12">
+          <div className="bg-surface border border-border rounded-xl p-6 sm:p-8 space-y-6">
+            <div className="max-w-2xl space-y-2">
+              <span className="text-xs font-mono uppercase tracking-wider text-primary font-semibold">
+                Quality & Governance
+              </span>
+              <h2 className="font-bold text-foreground">
+                Our baseline engineering and delivery standards
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {DELIVERY_STANDARDS.map((std) => (
+                <div
+                  key={std}
+                  className="p-4 rounded-lg bg-surface-muted border border-border flex items-start gap-2.5 text-sm text-foreground"
+                >
+                  <CheckCircle2
+                    className="w-4 h-4 text-primary shrink-0 mt-0.5"
+                    aria-hidden="true"
+                  />
+                  <span>{std}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="bg-surface border border-border rounded-2xl p-6 sm:p-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-2xl">
+              <h2 className="font-bold text-foreground">
+                Start a conversation with our team.
+              </h2>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                Whether you want to modernize internal billing and inventory,
+                launch a credible website, or improve customer acquisition, we
+                are ready to listen.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 min-h-[48px] rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-hover transition-colors"
+              >
+                Discuss Your Project
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/process"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 min-h-[48px] rounded-lg bg-surface-muted text-foreground border border-border text-sm font-semibold hover:bg-background transition-colors"
+              >
+                See How We Work
+              </Link>
+            </div>
           </div>
         </div>
       </section>

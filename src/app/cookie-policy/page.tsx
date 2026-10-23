@@ -1,76 +1,83 @@
-import React from "react";
 import type { Metadata } from "next";
-import ScrollReveal from "@/components/scroll-reveal";
-import AnimatedText from "@/components/animated-text";
+import { buildMetadata } from "@/lib/seo";
+import { SITE_CONFIG } from "@/data/site-config";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "Cookie Policy | Webntric Software",
-  description: "Webntric Software's cookie policy outlining how we use cookies and local storage to provide theme states and site navigation settings.",
-  alternates: {
-    canonical: "https://webntric.com/cookie-policy",
-  },
-};
+  description:
+    "Learn how Webntric Software uses essential preferences and analytics cookies on webntric.com and how you can manage your browser preferences.",
+  path: "/cookie-policy",
+});
 
-export default function CookiePolicy() {
+export default function CookiePolicyPage() {
   return (
-    <div className="overflow-hidden">
-      {/* Header */}
-      <section className="relative pt-32 pb-12 px-6 bg-secondary/10">
-        <div className="max-w-4xl mx-auto text-center flex flex-col gap-4">
-          <ScrollReveal direction="down">
-            <span className="text-xs uppercase tracking-wider text-primary font-bold">Legal</span>
-          </ScrollReveal>
-          <AnimatedText
-            text="Cookie Policy"
-            className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground"
-          />
-          <ScrollReveal delay={0.2}>
-            <p className="text-xs text-muted-foreground mt-2">
-              Last updated: August 9, 2026
-            </p>
-          </ScrollReveal>
+    <div className="bg-background py-10 sm:py-16">
+      <div className="container-editorial max-w-4xl space-y-8">
+        <Breadcrumbs
+          items={[{ name: "Cookie Policy", path: "/cookie-policy" }]}
+        />
+
+        <div className="p-4 rounded-lg bg-surface-muted border border-border text-xs text-muted-foreground">
+          <strong className="text-foreground">
+            Pre-Publication Legal Review Notice:{" "}
+          </strong>
+          This Cookie Policy describes technical storage and analytics usage on{" "}
+          {SITE_CONFIG.url} and should be reviewed by legal counsel if
+          additional third-party marketing pixels are added in the future.
         </div>
-      </section>
 
-      {/* Main Content */}
-      <section className="py-16 md:py-24 px-6 max-w-3xl mx-auto">
-        <ScrollReveal className="space-y-8 text-sm md:text-base text-muted-foreground leading-relaxed">
-          <div className="space-y-3">
-            <h2 className="text-lg font-bold text-foreground">1. What are Cookies and Local Storage?</h2>
-            <p>
-              Cookies are small text documents stored on your browser profile. Local storage is a standard, modern browser API that allows sites to save configuration settings locally inside your browser cache.
-            </p>
-          </div>
+        <header className="space-y-2 pb-6 border-b border-border">
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
+            Cookie Policy
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Last updated: October 2026 • {SITE_CONFIG.name}
+          </p>
+        </header>
 
-          <div className="space-y-3">
-            <h2 className="text-lg font-bold text-foreground">2. How We Use Browser Storage</h2>
+        <div className="space-y-8 text-sm sm:text-base text-muted-foreground leading-relaxed">
+          <section className="space-y-3">
+            <h2 className="text-xl font-bold text-foreground">
+              1. How We Use Cookies & Local Storage
+            </h2>
             <p>
-              Webntric Software uses local browser storage for one specific setting: to persist your dark/light theme preference. This is a functional utility config and does not gather private personal information.
+              {SITE_CONFIG.url} uses a minimal set of browser storage mechanisms
+              and analytics cookies to ensure reliable website operation and to
+              understand which pages are most helpful to visitors:
             </p>
-          </div>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>
+                <strong className="text-foreground">
+                  Visual Theme Preference (Local Storage):
+                </strong>{" "}
+                Stores your preferred light or dark display mode (`theme`) so
+                pages remain comfortable to read across visits.
+              </li>
+              <li>
+                <strong className="text-foreground">
+                  Performance & Analytics (Google Tag Manager):
+                </strong>{" "}
+                Configured via container `{SITE_CONFIG.gtmId}` to measure
+                aggregate page visits, navigation usage, and enquiry conversion
+                steps.
+              </li>
+            </ul>
+          </section>
 
-          <div className="space-y-3">
-            <h2 className="text-lg font-bold text-foreground">3. Analytics and Advertising Cookies</h2>
+          <section className="space-y-3">
+            <h2 className="text-xl font-bold text-foreground">
+              2. Managing or Disabling Cookies
+            </h2>
             <p>
-              We do not inject third-party ad retargeting cookies or tracking tags on this website. Any future marketing metrics setups will rely on aggregated, anonymous statistics that conform to international privacy standards.
+              You can clear or block cookies at any time through your web
+              browser settings. Blocking analytics cookies will not prevent you
+              from reading any page on {SITE_CONFIG.url} or submitting our
+              contact form.
             </p>
-          </div>
-
-          <div className="space-y-3">
-            <h2 className="text-lg font-bold text-foreground">4. Managing Your Preferences</h2>
-            <p>
-              You can clear your browser storage, disable local cookies, or block storage functions inside your browser configuration settings panel at any time. Please note that disabling browser storage may cause the dark/light mode toggle to reset on subsequent visits.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <h2 className="text-lg font-bold text-foreground">5. Inquiries</h2>
-            <p>
-              For further questions regarding our cookie policy, please get in touch with our technical compliance team at <a href="mailto:info@webntric.com" className="text-primary font-semibold hover:underline">info@webntric.com</a>.
-            </p>
-          </div>
-        </ScrollReveal>
-      </section>
+          </section>
+        </div>
+      </div>
     </div>
   );
 }

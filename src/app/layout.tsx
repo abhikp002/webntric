@@ -6,51 +6,57 @@ import { ThemeProvider } from "@/context/theme-context";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import WhatsAppButton from "@/components/whatsapp-button";
+import JsonLd from "@/components/json-ld";
+import { SITE_CONFIG } from "@/data/site-config";
+import { buildOrganizationJsonLd } from "@/lib/seo";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["600", "700"],
+  display: "swap",
 });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Webntric Software | Modern Software Development & Digital Solutions",
-  description: "Webntric Software builds high-performance websites, mobile applications, offline business systems, and digital marketing growth strategies.",
-  metadataBase: new URL("https://webntric.com"),
+  title: {
+    default:
+      "Webntric Software | Websites, Custom Business Software & Digital Growth",
+    template: "%s",
+  },
+  description: SITE_CONFIG.description,
+  metadataBase: new URL(SITE_CONFIG.url),
   verification: {
-    google: "wNxe4NXGEjcM74igkC6z0_1inrvkFQWXXCQ-geaDQf0",
+    google: SITE_CONFIG.googleVerification,
+  },
+  alternates: {
+    canonical: SITE_CONFIG.url,
   },
   openGraph: {
-    title: "Webntric Software | Modern Software Development & Digital Solutions",
-    description: "Premium web development, mobile applications, offline software, and SEO/marketing strategies built for enterprise growth.",
-    url: "https://webntric.com",
-    siteName: "Webntric Software",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Webntric Software Visual Identity",
-      },
-    ],
-    locale: "en_US",
+    title:
+      "Webntric Software | Websites, Custom Business Software & Digital Growth",
+    description: SITE_CONFIG.description,
+    url: SITE_CONFIG.url,
+    siteName: SITE_CONFIG.name,
+    locale: "en_IN",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Webntric Software | Modern Software Development & Digital Solutions",
-    description: "Premium web development, mobile applications, offline software, and SEO/marketing strategies built for enterprise growth.",
-    images: ["/og-image.jpg"],
+    title:
+      "Webntric Software | Websites, Custom Business Software & Digital Growth",
+    description: SITE_CONFIG.description,
   },
 };
 
@@ -59,6 +65,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || SITE_CONFIG.defaultGtmId;
+
   return (
     <html
       lang="en"
@@ -66,7 +74,6 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Google Tag Manager */}
         <Script
           id="gtm-script"
           strategy="afterInteractive"
@@ -75,25 +82,33 @@ export default function RootLayout({
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-T63XBR6K');`,
+})(window,document,'script','dataLayer','${gtmId}');`,
           }}
         />
-        {/* End Google Tag Manager */}
       </head>
-      <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300 font-sans">
-        {/* Google Tag Manager (noscript) */}
+      <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
         <noscript>
           <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-T63XBR6K"
+            src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
             height="0"
             width="0"
+            title="Google Tag Manager"
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
-        {/* End Google Tag Manager (noscript) */}
+
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2.5 focus:rounded-lg focus:bg-primary focus:text-primary-foreground focus:font-semibold focus:shadow-lg"
+        >
+          Skip to main content
+        </a>
+
+        <JsonLd data={buildOrganizationJsonLd()} />
+
         <ThemeProvider>
           <Navbar />
-          <main className="flex-grow flex flex-col">
+          <main id="main-content" className="flex-grow flex flex-col">
             {children}
           </main>
           <Footer />

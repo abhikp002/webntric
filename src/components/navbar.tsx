@@ -3,299 +3,859 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, X, ArrowRight, Code, PhoneCall, Monitor, Megaphone, Search, Share2 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, Menu, X, ArrowRight } from "lucide-react";
 import ThemeToggle from "./theme-toggle";
 import Logo from "./logo";
+import {
+  SERVICE_NAV_GROUPS,
+  GENERATIVE_AI_NAV_ITEMS,
+  SECURITY_RELIABILITY_NAV_ITEMS,
+  INDUSTRY_NAV_ITEMS,
+  BUSINESS_STAGE_NAV_ITEMS,
+} from "@/data/site-config";
+import { trackEvent } from "@/lib/analytics";
 
-const servicesList = [
-  {
-    name: "Web Development",
-    href: "/services/web-development",
-    description: "Custom websites and fast-loading web applications.",
-    icon: Code,
-    color: "text-blue-500",
-    bg: "bg-blue-500/10",
-  },
-  {
-    name: "Mobile App Development",
-    href: "/services/mobile-app-development",
-    description: "Native iOS & Android app engineering.",
-    icon: PhoneCall,
-    color: "text-indigo-500",
-    bg: "bg-indigo-500/10",
-  },
-  {
-    name: "Offline Windows Software",
-    href: "/services/offline-windows-software",
-    description: "Secure, reliable offline database and business systems.",
-    icon: Monitor,
-    color: "text-violet-500",
-    bg: "bg-violet-500/10",
-  },
-  {
-    name: "Digital Marketing",
-    href: "/services/digital-marketing",
-    description: "Growth campaigns designed to acquire customers.",
-    icon: Megaphone,
-    color: "text-pink-500",
-    bg: "bg-pink-500/10",
-  },
-  {
-    name: "SEO Optimization",
-    href: "/services/seo",
-    description: "Technical SEO audits and content visibility growth.",
-    icon: Search,
-    color: "text-emerald-500",
-    bg: "bg-emerald-500/10",
-  },
-  {
-    name: "Social Media Management",
-    href: "/services/social-media-management",
-    description: "Community building and creative content production.",
-    icon: Share2,
-    color: "text-amber-500",
-    bg: "bg-amber-500/10",
-  },
-];
+type OpenDropdown =
+  | "services"
+  | "ai"
+  | "security"
+  | "industries"
+  | "stages"
+  | null;
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
-  const megaMenuRef = useRef<HTMLDivElement>(null);
+  const [dropdownState, setDropdownState] = useState<{
+    path: string;
+    menu: OpenDropdown;
+  }>({ path: pathname, menu: null });
+  const [mobileMenuState, setMobileMenuState] = useState<{
+    path: string;
+    open: boolean;
+  }>({ path: pathname, open: false });
+  const navRef = useRef<HTMLElement>(null);
 
-  // Monitor scroll for header background transitions
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const openDropdown =
+    dropdownState.path === pathname ? dropdownState.menu : null;
+  const isMobileMenuOpen =
+    mobileMenuState.path === pathname ? mobileMenuState.open : false;
 
-  // Close menus when route changes
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-    setIsMegaMenuOpen(false);
-  }, [pathname]);
+  const setOpenDropdown = (
+    next: OpenDropdown | ((prev: OpenDropdown) => OpenDropdown)
+  ) => {
+    setDropdownState((prev) => {
+      const currentMenu = prev.path === pathname ? prev.menu : null;
+      const resolved =
+        typeof next === "function" ? next(currentMenu) : next;
+      return { path: pathname, menu: resolved };
+    });
+  };
 
-  // Click outside mega-menu logic
+  const setIsMobileMenuOpen = (
+    next: boolean | ((prev: boolean) => boolean)
+  ) => {
+    setMobileMenuState((prev) => {
+      const currentOpen = prev.path === pathname ? prev.open : false;
+      const resolved =
+        typeof next === "function" ? next(currentOpen) : next;
+      return { path: pathname, open: resolved };
+    });
+  };
+
+  // Close dropdowns on outside click or Escape key
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (megaMenuRef.current && !megaMenuRef.current.contains(event.target as Node)) {
-        setIsMegaMenuOpen(false);
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setDropdownState((prev) => ({ ...prev, menu: null }));
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setDropdownState((prev) => ({ ...prev, menu: null }));
+        setMobileMenuState((prev) => ({ ...prev, open: false }));
+      }
+      if (event.key === "Tab" && navRef.current) {
+        const drawer = navRef.current.querySelector(
+          "#mobile-navigation-drawer"
+        ) as HTMLElement | null;
+        if (drawer) {
+          const focusable = drawer.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          );
+          if (focusable.length > 0) {
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
+            }
+          }
+        }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  // Lock body scroll when mobile drawer is open
+  const serviceColumns = React.useMemo(() => {
+    const col1Groups = [
+      SERVICE_NAV_GROUPS.find((g) => g.groupTitle === "Build Credibility & Presence"),
+      SERVICE_NAV_GROUPS.find((g) => g.groupTitle === "Security and Reliability"),
+    ].filter((g): g is (typeof SERVICE_NAV_GROUPS)[number] => Boolean(g));
+
+    const col2Groups = [
+      SERVICE_NAV_GROUPS.find((g) => g.groupTitle === "Work More Efficiently"),
+      SERVICE_NAV_GROUPS.find((g) => g.groupTitle === "Generative AI"),
+    ].filter((g): g is (typeof SERVICE_NAV_GROUPS)[number] => Boolean(g));
+
+    const col3Groups = [
+      SERVICE_NAV_GROUPS.find((g) => g.groupTitle === "Reach the Right Customers"),
+    ].filter((g): g is (typeof SERVICE_NAV_GROUPS)[number] => Boolean(g));
+
+    const handled = new Set(
+      [...col1Groups, ...col2Groups, ...col3Groups].map((g) => g.groupTitle)
+    );
+    const unhandled = SERVICE_NAV_GROUPS.filter(
+      (g) => !handled.has(g.groupTitle)
+    );
+    if (unhandled.length > 0) {
+      col3Groups.push(...unhandled);
+    }
+
+    return [col1Groups, col2Groups, col3Groups];
+  }, []);
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
+  const toggleDropdown = (menu: Exclude<OpenDropdown, null>) => {
+    setOpenDropdown((prev) => (prev === menu ? null : menu));
+  };
 
   return (
-    <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? "py-4 bg-background/80 backdrop-blur-md shadow-md border-b border-border"
-            : "py-6 bg-transparent"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="group focus:outline-none">
-            <Logo />
-          </Link>
+    <header
+      ref={navRef}
+      className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-sm border-b border-border"
+    >
+      <div className="container-editorial h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4 flex-nowrap">
+        {/* Brand Logo */}
+        <Link
+          href="/"
+          className="shrink-0 py-1 rounded-md"
+          aria-label="Webntric Software — Home"
+        >
+          <Logo />
+        </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <Link
-              href="/"
-              className={`text-sm font-medium transition-colors hover:text-primary focus:outline-none ${
-                pathname === "/" ? "text-primary" : "text-foreground/70"
-              }`}
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className={`text-sm font-medium transition-colors hover:text-primary focus:outline-none ${
-                pathname === "/about" ? "text-primary" : "text-foreground/70"
-              }`}
-            >
-              About
-            </Link>
-
-            {/* Mega Menu Dropdown */}
-            <div className="relative" ref={megaMenuRef}>
-              <button
-                onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
-                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary focus:outline-none cursor-pointer ${
-                  pathname.startsWith("/services") ? "text-primary" : "text-foreground/70"
-                }`}
-                aria-expanded={isMegaMenuOpen}
-              >
-                Services
-                <ChevronDown
-                  className={`h-4 w-4 transition-transform duration-300 ${
-                    isMegaMenuOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              <AnimatePresence>
-                {isMegaMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 15 }}
-                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute left-1/2 -translate-x-1/2 mt-4 w-[600px] rounded-2xl bg-card border border-border shadow-2xl p-6 grid grid-cols-2 gap-4"
-                  >
-                    {servicesList.map((svc) => (
-                      <Link
-                        key={svc.href}
-                        href={svc.href}
-                        className="group flex gap-4 p-3 rounded-xl hover:bg-secondary transition-colors duration-200 focus:outline-none"
-                      >
-                        <div className={`p-2.5 rounded-lg ${svc.bg} ${svc.color} h-fit`}>
-                          <svc.icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                            {svc.name}
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                            {svc.description}
-                          </p>
-                        </div>
-                      </Link>
-                    ))}
-                    <div className="col-span-2 mt-2 pt-4 border-t border-border flex justify-between items-center text-xs text-muted-foreground">
-                      <span>Need a custom technology solution?</span>
-                      <Link
-                        href="/contact"
-                        className="text-primary font-semibold hover:underline flex items-center gap-1 focus:outline-none"
-                        onClick={() => setIsMegaMenuOpen(false)}
-                      >
-                        Start a project <ArrowRight className="h-3.5 w-3.5" />
-                      </Link>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            <Link
-              href="/contact"
-              className={`text-sm font-medium transition-colors hover:text-primary focus:outline-none ${
-                pathname === "/contact" ? "text-primary" : "text-foreground/70"
-              }`}
-            >
-              Contact
-            </Link>
-          </nav>
-
-          {/* Right Side CTAs */}
-          <div className="hidden md:flex items-center gap-4">
-            <ThemeToggle />
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-foreground text-background text-sm font-semibold hover:bg-foreground/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-[#030712]"
-            >
-              Start a Project
-            </Link>
-          </div>
-
-          {/* Mobile Right Bar */}
-          <div className="flex md:hidden items-center gap-4">
-            <ThemeToggle />
+        {/* Desktop Navigation */}
+        <nav
+          aria-label="Main navigation"
+          className="hidden xl:flex items-center gap-0.5 2xl:gap-1.5 whitespace-nowrap flex-nowrap shrink-0"
+        >
+          {/* Services Mega Dropdown */}
+          <div className="relative">
             <button
-              onClick={toggleMobileMenu}
-              className="p-2 rounded-lg bg-secondary border border-border text-foreground hover:bg-secondary/80 focus:outline-none cursor-pointer"
-              aria-label="Toggle Navigation Menu"
+              type="button"
+              onClick={() => toggleDropdown("services")}
+              aria-expanded={openDropdown === "services"}
+              aria-controls="nav-services-menu"
+              className={`inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                pathname === "/services"
+                  ? "text-primary font-semibold bg-primary/5"
+                  : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+              }`}
             >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <span>Services</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform duration-200 ${
+                  openDropdown === "services" ? "rotate-180 text-primary" : ""
+                }`}
+                aria-hidden="true"
+              />
             </button>
-          </div>
-        </div>
-      </header>
 
-      {/* Mobile Drawer Navigation */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-background/95 backdrop-blur-lg flex flex-col pt-24 px-6 md:hidden"
-          >
-            <nav className="flex flex-col gap-6 text-lg font-semibold overflow-y-auto max-h-[70vh] pb-8">
-              <Link
-                href="/"
-                className="pb-2 border-b border-border/50 hover:text-primary"
-                onClick={() => setIsMobileMenuOpen(false)}
+            {openDropdown === "services" && (
+              <div
+                id="nav-services-menu"
+                role="region"
+                aria-label="Services menu"
+                className="absolute left-0 mt-2 w-[840px] 2xl:w-[920px] max-w-[calc(100vw-2.5rem)] max-h-[calc(100vh-5.5rem)] overflow-y-auto overscroll-contain rounded-xl bg-card border border-border shadow-xl p-5 2xl:p-6 z-50"
               >
-                Home
-              </Link>
-              <Link
-                href="/about"
-                className="pb-2 border-b border-border/50 hover:text-primary"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                About
-              </Link>
-
-              {/* Mobile Services List */}
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                  Our Services
-                </span>
-                <div className="grid grid-cols-1 gap-3 pl-2 mt-1">
-                  {servicesList.map((svc) => (
-                    <Link
-                      key={svc.href}
-                      href={svc.href}
-                      className="flex items-center gap-3 py-1.5 hover:text-primary"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <span className={`p-1.5 rounded ${svc.bg} ${svc.color}`}>
-                        <svc.icon className="h-4 w-4" />
-                      </span>
-                      <span className="text-sm font-medium">{svc.name}</span>
-                    </Link>
+                <div className="grid grid-cols-3 gap-5">
+                  {serviceColumns.map((columnGroups, colIdx) => (
+                    <div key={colIdx} className="space-y-4">
+                      {columnGroups.map((group) => (
+                        <div key={group.groupTitle} className="space-y-1.5">
+                          <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-1">
+                            {group.groupTitle}
+                          </div>
+                          <ul className="space-y-0.5">
+                            {group.items.map((item) => (
+                              <li key={item.href}>
+                                <Link
+                                  href={item.href}
+                                  onClick={() => setOpenDropdown(null)}
+                                  className="block px-2.5 py-1.5 rounded-lg hover:bg-secondary/70 transition-colors group"
+                                >
+                                  <div className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors leading-tight">
+                                    {item.label}
+                                  </div>
+                                  {item.description && (
+                                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug line-clamp-2">
+                                      {item.description}
+                                    </p>
+                                  )}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
                   ))}
                 </div>
+
+                <div className="mt-4 pt-3.5 border-t border-border flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-primary/10 text-primary font-mono font-semibold uppercase text-[10px]">
+                      Our SaaS Product
+                    </span>
+                    <a
+                      href="https://vidyasetu.pro/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                    >
+                      VidyaSetu — School ERP Platform
+                      <ArrowRight className="h-3 w-3" aria-hidden="true" />
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Link
+                      href="/services"
+                      onClick={() => setOpenDropdown(null)}
+                      className="font-semibold text-foreground hover:text-primary transition-colors"
+                    >
+                      View all 15 services
+                    </Link>
+                    <Link
+                      href="/contact"
+                      onClick={() => setOpenDropdown(null)}
+                      className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                    >
+                      Discuss your requirement
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Generative AI Dropdown */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => toggleDropdown("ai")}
+              aria-expanded={openDropdown === "ai"}
+              aria-controls="nav-ai-menu"
+              className={`inline-flex items-center gap-1 px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                pathname.startsWith("/services/generative-ai-applications")
+                  ? "text-primary font-semibold bg-primary/5"
+                  : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+              }`}
+            >
+              <span>Generative AI</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform duration-200 ${
+                  openDropdown === "ai" ? "rotate-180 text-primary" : ""
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+
+            {openDropdown === "ai" && (
+              <div
+                id="nav-ai-menu"
+                role="region"
+                aria-label="Generative AI menu"
+                className="absolute left-0 mt-2 w-[660px] max-w-[calc(100vw-2.5rem)] max-h-[calc(100vh-5.5rem)] overflow-y-auto overscroll-contain rounded-xl bg-card border border-border shadow-xl p-5 sm:p-6 z-50"
+              >
+                <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-2 mb-3">
+                  Practical Generative AI Applications & Human-in-the-Loop Workflows
+                </div>
+                <ul className="grid grid-cols-2 gap-2">
+                  {GENERATIVE_AI_NAV_ITEMS.map((item) => (
+                    <li key={item.label}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setOpenDropdown(null)}
+                        className="block p-2.5 rounded-lg hover:bg-secondary/70 transition-colors group"
+                      >
+                        <div className="text-sm font-semibold text-foreground group-hover:text-primary">
+                          {item.label}
+                        </div>
+                        {item.description && (
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                            {item.description}
+                          </p>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 pt-3 border-t border-border flex justify-between items-center text-xs">
+                  <span className="text-muted-foreground">
+                    AI built around real business processes, permissions, and human review.
+                  </span>
+                  <Link
+                    href="/services/generative-ai-applications"
+                    onClick={() => setOpenDropdown(null)}
+                    className="font-semibold text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    Explore Generative AI
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Security and Reliability Dropdown */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => toggleDropdown("security")}
+              aria-expanded={openDropdown === "security"}
+              aria-controls="nav-security-menu"
+              className={`inline-flex items-center gap-1 px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                pathname.startsWith("/services/website-data-security")
+                  ? "text-primary font-semibold bg-primary/5"
+                  : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+              }`}
+            >
+              <span>Security & Reliability</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform duration-200 ${
+                  openDropdown === "security" ? "rotate-180 text-primary" : ""
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+
+            {openDropdown === "security" && (
+              <div
+                id="nav-security-menu"
+                role="region"
+                aria-label="Security and Reliability menu"
+                className="absolute left-0 mt-2 w-[680px] max-w-[calc(100vw-2.5rem)] max-h-[calc(100vh-5.5rem)] overflow-y-auto overscroll-contain rounded-xl bg-card border border-border shadow-xl p-5 sm:p-6 z-50"
+              >
+                <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-2 mb-3">
+                  Website, Application & Data Security Controls
+                </div>
+                <ul className="grid grid-cols-2 gap-2">
+                  {SECURITY_RELIABILITY_NAV_ITEMS.map((item) => (
+                    <li key={item.label}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setOpenDropdown(null)}
+                        className="block p-2.5 rounded-lg hover:bg-secondary/70 transition-colors group"
+                      >
+                        <div className="text-sm font-semibold text-foreground group-hover:text-primary">
+                          {item.label}
+                        </div>
+                        {item.description && (
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                            {item.description}
+                          </p>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 pt-3 border-t border-border flex justify-between items-center text-xs">
+                  <span className="text-muted-foreground">
+                    HTTPS, OWASP-informed code, automated backups, and tested releases.
+                  </span>
+                  <Link
+                    href="/services/website-data-security"
+                    onClick={() => setOpenDropdown(null)}
+                    className="font-semibold text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    Explore Security & Reliability
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Industries Dropdown */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => toggleDropdown("industries")}
+              aria-expanded={openDropdown === "industries"}
+              aria-controls="nav-industries-menu"
+              className={`inline-flex items-center gap-1 px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                pathname.startsWith("/industries")
+                  ? "text-primary font-semibold"
+                  : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+              }`}
+            >
+              <span>Industries</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform duration-200 ${
+                  openDropdown === "industries" ? "rotate-180 text-primary" : ""
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+
+            {openDropdown === "industries" && (
+              <div
+                id="nav-industries-menu"
+                role="region"
+                aria-label="Industries menu"
+                className="absolute left-0 mt-2 w-[620px] max-w-[calc(100vw-2.5rem)] max-h-[calc(100vh-5.5rem)] overflow-y-auto overscroll-contain rounded-xl bg-card border border-border shadow-xl p-5 sm:p-6 z-50"
+              >
+                <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-2 mb-3">
+                  Solutions Tailored by Industry Operation
+                </div>
+                <ul className="grid grid-cols-2 gap-2">
+                  {INDUSTRY_NAV_ITEMS.map((ind) => (
+                    <li key={ind.href}>
+                      <Link
+                        href={ind.href}
+                        onClick={() => setOpenDropdown(null)}
+                        className="block p-2.5 rounded-lg hover:bg-secondary/70 transition-colors group"
+                      >
+                        <div className="text-sm font-semibold text-foreground group-hover:text-primary">
+                          {ind.label}
+                        </div>
+                        {ind.description && (
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                            {ind.description}
+                          </p>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 pt-3 border-t border-border flex justify-between items-center text-xs">
+                  <span className="text-muted-foreground">
+                    See how operational workflows shape technology choices.
+                  </span>
+                  <Link
+                    href="/industries"
+                    onClick={() => setOpenDropdown(null)}
+                    className="font-semibold text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    Explore all industries
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Business Stages Dropdown */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => toggleDropdown("stages")}
+              aria-expanded={openDropdown === "stages"}
+              aria-controls="nav-stages-menu"
+              className={`inline-flex items-center gap-1 px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                pathname.startsWith("/businesses")
+                  ? "text-primary font-semibold"
+                  : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+              }`}
+            >
+              <span>Business Stages</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform duration-200 ${
+                  openDropdown === "stages" ? "rotate-180 text-primary" : ""
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+
+            {openDropdown === "stages" && (
+              <div
+                id="nav-stages-menu"
+                role="region"
+                aria-label="Business Stages menu"
+                className="absolute left-0 mt-2 w-[380px] max-w-[calc(100vw-2.5rem)] max-h-[calc(100vh-5.5rem)] overflow-y-auto overscroll-contain rounded-xl bg-card border border-border shadow-xl p-5 z-50"
+              >
+                <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-2 mb-2.5">
+                  Right-Sized Guidance by Maturity
+                </div>
+                <ul className="space-y-1">
+                  {BUSINESS_STAGE_NAV_ITEMS.map((stage) => (
+                    <li key={stage.href}>
+                      <Link
+                        href={stage.href}
+                        onClick={() => setOpenDropdown(null)}
+                        className="block p-2.5 rounded-lg hover:bg-secondary/70 transition-colors group"
+                      >
+                        <div className="text-sm font-semibold text-foreground group-hover:text-primary">
+                          {stage.label}
+                        </div>
+                        {stage.description && (
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                            {stage.description}
+                          </p>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-3 pt-3 border-t border-border text-right">
+                  <Link
+                    href="/businesses"
+                    onClick={() => setOpenDropdown(null)}
+                    className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    Compare all business stages
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <Link
+            href="/work"
+            aria-current={pathname === "/work" ? "page" : undefined}
+            className={`px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              pathname === "/work"
+                ? "text-primary font-semibold"
+                : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+            }`}
+          >
+            Work
+          </Link>
+
+          <Link
+            href="/process"
+            aria-current={pathname === "/process" ? "page" : undefined}
+            className={`px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              pathname === "/process"
+                ? "text-primary font-semibold"
+                : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+            }`}
+          >
+            Process
+          </Link>
+
+          <Link
+            href="/support"
+            aria-current={pathname === "/support" ? "page" : undefined}
+            className={`px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              pathname === "/support"
+                ? "text-primary font-semibold"
+                : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+            }`}
+          >
+            Support
+          </Link>
+
+          <Link
+            href="/about"
+            aria-current={pathname === "/about" ? "page" : undefined}
+            className={`px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              pathname === "/about"
+                ? "text-primary font-semibold"
+                : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+            }`}
+          >
+            About
+          </Link>
+
+          <Link
+            href="/insights"
+            aria-current={pathname.startsWith("/insights") ? "page" : undefined}
+            className={`px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              pathname.startsWith("/insights")
+                ? "text-primary font-semibold"
+                : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+            }`}
+          >
+            Insights
+          </Link>
+        </nav>
+
+        {/* Desktop Right Actions */}
+        <div className="hidden xl:flex items-center gap-3 shrink-0">
+          <ThemeToggle />
+          <Link
+            href="/contact"
+            onClick={() =>
+              trackEvent("cta_clicked", {
+                location: "header",
+                label: "Discuss your business",
+              })
+            }
+            className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+          >
+            Discuss your business
+          </Link>
+        </div>
+
+        {/* Mobile & Tablet Controls (< 1280px) */}
+        <div className="flex xl:hidden items-center gap-2 shrink-0">
+          <Link
+            href="/contact"
+            onClick={() =>
+              trackEvent("cta_clicked", {
+                location: "header_mobile_compact",
+                label: "Start a conversation",
+              })
+            }
+            className="hidden sm:inline-flex items-center justify-center h-10 px-3.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
+          >
+            Start a conversation
+          </Link>
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-navigation-drawer"
+            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg bg-secondary border border-border text-foreground hover:bg-secondary/80 cursor-pointer"
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <Menu className="h-5 w-5" aria-hidden="true" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile & Tablet Navigation Drawer */}
+      {isMobileMenuOpen && (
+        <div
+          id="mobile-navigation-drawer"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
+          className="fixed inset-x-0 top-16 sm:top-20 bottom-0 z-50 bg-background border-t border-border overflow-y-auto xl:hidden"
+        >
+          <div className="px-5 py-6 space-y-6 pb-24">
+            <div className="flex flex-col gap-2">
+              <Link
+                href="/contact"
+                onClick={() => {
+                  trackEvent("cta_clicked", {
+                    location: "mobile_drawer",
+                    label: "Discuss your business",
+                  });
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center justify-center w-full h-11 rounded-lg bg-primary text-primary-foreground font-semibold text-sm"
+              >
+                Discuss your business
+              </Link>
+              <a
+                href="https://vidyasetu.pro/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between w-full p-3 rounded-lg bg-secondary/80 border border-primary/30 text-foreground font-semibold text-xs"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="px-1.5 py-0.5 rounded bg-primary text-primary-foreground font-mono text-[9px] uppercase">
+                    Our SaaS
+                  </span>
+                  <span>VidyaSetu School ERP</span>
+                </div>
+                <ArrowRight className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+              </a>
+            </div>
+
+            <nav aria-label="Mobile navigation" className="space-y-6">
+              <div className="grid grid-cols-2 gap-2 text-sm font-semibold">
+                <Link
+                  href="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2.5 rounded-lg bg-card border border-border"
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/services"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2.5 rounded-lg bg-card border border-border"
+                >
+                  All Services
+                </Link>
+                <Link
+                  href="/work"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2.5 rounded-lg bg-card border border-border"
+                >
+                  Work & Blueprints
+                </Link>
+                <Link
+                  href="/process"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2.5 rounded-lg bg-card border border-border"
+                >
+                  How We Work
+                </Link>
+                <Link
+                  href="/support"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2.5 rounded-lg bg-card border border-border"
+                >
+                  Support & Care
+                </Link>
+                <Link
+                  href="/about"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2.5 rounded-lg bg-card border border-border"
+                >
+                  About Webntric
+                </Link>
+                <Link
+                  href="/insights"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2.5 rounded-lg bg-card border border-border"
+                >
+                  Insights & Guides
+                </Link>
+                <Link
+                  href="/faq"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2.5 rounded-lg bg-card border border-border"
+                >
+                  FAQ
+                </Link>
               </div>
 
-              <Link
-                href="/contact"
-                className="pb-2 border-b border-border/50 hover:text-primary"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Contact
-              </Link>
-            </nav>
+              {/* Mobile Services */}
+              {SERVICE_NAV_GROUPS.map((group) => (
+                <div key={group.groupTitle} className="space-y-2">
+                  <div className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground">
+                    {group.groupTitle}
+                  </div>
+                  <ul className="space-y-1 border-l-2 border-border pl-3">
+                    {group.items.map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block py-1.5 text-sm font-medium text-foreground hover:text-primary"
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
 
-            <div className="mt-auto pb-10 flex flex-col gap-4">
-              <Link
-                href="/contact"
-                className="flex items-center justify-center w-full h-12 rounded-full bg-foreground text-background font-semibold hover:bg-foreground/90 transition-colors focus:outline-none"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Start a Project
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+              {/* Mobile Generative AI Capabilities */}
+              <div className="space-y-2">
+                <div className="text-xs font-mono font-semibold uppercase tracking-wider text-primary">
+                  Generative AI Capabilities
+                </div>
+                <ul className="grid grid-cols-1 gap-1 border-l-2 border-primary/40 pl-3">
+                  {GENERATIVE_AI_NAV_ITEMS.map((item) => (
+                    <li key={item.label}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1.5 text-sm font-medium text-foreground hover:text-primary"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Mobile Security & Reliability Capabilities */}
+              <div className="space-y-2">
+                <div className="text-xs font-mono font-semibold uppercase tracking-wider text-primary">
+                  Security & Reliability Controls
+                </div>
+                <ul className="grid grid-cols-1 gap-1 border-l-2 border-primary/40 pl-3">
+                  {SECURITY_RELIABILITY_NAV_ITEMS.map((item) => (
+                    <li key={item.label}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1.5 text-sm font-medium text-foreground hover:text-primary"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Mobile Business Stages */}
+              <div className="space-y-2">
+                <div className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground">
+                  By Business Stage
+                </div>
+                <ul className="grid grid-cols-1 gap-1 border-l-2 border-border pl-3">
+                  {BUSINESS_STAGE_NAV_ITEMS.map((stage) => (
+                    <li key={stage.href}>
+                      <Link
+                        href={stage.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1.5 text-sm font-medium text-foreground hover:text-primary"
+                      >
+                        {stage.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Mobile Industries */}
+              <div className="space-y-2">
+                <div className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground">
+                  Industries We Serve
+                </div>
+                <ul className="grid grid-cols-1 gap-1 border-l-2 border-border pl-3">
+                  {INDUSTRY_NAV_ITEMS.map((ind) => (
+                    <li key={ind.href}>
+                      <Link
+                        href={ind.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1.5 text-sm font-medium text-foreground hover:text-primary"
+                      >
+                        {ind.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      )}
+    </header>
   );
 }
