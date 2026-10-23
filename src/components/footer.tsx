@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Mail, Phone, MapPin, Clock, ArrowRight } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, ArrowRight, Linkedin, Facebook } from "lucide-react";
 import Logo from "./logo";
 import {
   SITE_CONFIG,
@@ -44,6 +44,38 @@ export default function Footer() {
                 Discuss your business requirement
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
+            </div>
+
+            <div className="pt-1 flex items-center gap-2.5">
+              <span className="text-xs font-mono font-semibold uppercase text-muted-foreground">
+                Follow Us:
+              </span>
+              <a
+                href="https://www.linkedin.com/company/webntric"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("cta_clicked", { label: "linkedin_profile", location: "footer" })
+                }
+                aria-label="Webntric on LinkedIn"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-secondary border border-border text-xs font-medium text-foreground hover:text-primary hover:border-primary/40 transition-colors"
+              >
+                <Linkedin className="h-3.5 w-3.5 text-[#0077b5]" aria-hidden="true" />
+                <span>LinkedIn</span>
+              </a>
+              <a
+                href="https://www.facebook.com/webntric"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("cta_clicked", { label: "facebook_profile", location: "footer" })
+                }
+                aria-label="Webntric on Facebook"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-secondary border border-border text-xs font-medium text-foreground hover:text-primary hover:border-primary/40 transition-colors"
+              >
+                <Facebook className="h-3.5 w-3.5 text-[#1877f2]" aria-hidden="true" />
+                <span>Facebook</span>
+              </a>
             </div>
           </div>
 
@@ -261,6 +293,27 @@ export default function Footer() {
                   <span className="text-[10px]">↗</span>
                 </a>
               </li>
+              <li className="pt-2 border-t border-border flex items-center gap-3">
+                <a
+                  href="https://www.linkedin.com/company/webntric"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Linkedin className="h-3.5 w-3.5 text-[#0077b5]" aria-hidden="true" />
+                  LinkedIn
+                </a>
+                <span className="text-border">•</span>
+                <a
+                  href="https://www.facebook.com/webntric"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Facebook className="h-3.5 w-3.5 text-[#1877f2]" aria-hidden="true" />
+                  Facebook
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -347,6 +400,27 @@ export default function Footer() {
             >
               Sitemap
             </Link>
+            <span className="text-border hidden sm:inline">|</span>
+            <a
+              href="https://www.linkedin.com/company/webntric"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Webntric on LinkedIn"
+              className="hover:text-primary transition-colors inline-flex items-center gap-1"
+            >
+              <Linkedin className="h-3.5 w-3.5 text-[#0077b5]" aria-hidden="true" />
+              <span>LinkedIn</span>
+            </a>
+            <a
+              href="https://www.facebook.com/webntric"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Webntric on Facebook"
+              className="hover:text-primary transition-colors inline-flex items-center gap-1"
+            >
+              <Facebook className="h-3.5 w-3.5 text-[#1877f2]" aria-hidden="true" />
+              <span>Facebook</span>
+            </a>
           </div>
         </div>
       </div>

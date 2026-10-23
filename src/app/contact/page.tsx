@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Mail, Phone, MapPin, Clock, MessageSquare } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, MessageSquare, Linkedin, Facebook } from "lucide-react";
 import { buildMetadata, buildContactPageJsonLd } from "@/lib/seo";
 import { SITE_CONFIG } from "@/data/site-config";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -177,6 +177,32 @@ export default async function ContactPage({
                       {SITE_CONFIG.responseExpectation} (
                       {SITE_CONFIG.businessHours})
                     </p>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-border space-y-2">
+                  <span className="block text-xs font-mono uppercase text-muted-foreground">
+                    Connect on Social Media
+                  </span>
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <a
+                      href="https://www.linkedin.com/company/webntric"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary border border-border text-xs font-semibold text-foreground hover:text-primary hover:border-primary/40 transition-colors"
+                    >
+                      <Linkedin className="h-3.5 w-3.5 text-[#0077b5]" aria-hidden="true" />
+                      <span>LinkedIn</span>
+                    </a>
+                    <a
+                      href="https://www.facebook.com/webntric"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary border border-border text-xs font-semibold text-foreground hover:text-primary hover:border-primary/40 transition-colors"
+                    >
+                      <Facebook className="h-3.5 w-3.5 text-[#1877f2]" aria-hidden="true" />
+                      <span>Facebook</span>
+                    </a>
                   </div>
                 </div>
               </div>

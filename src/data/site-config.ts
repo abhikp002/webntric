@@ -43,21 +43,16 @@ export const SITE_CONFIG = {
   googleVerification: "wNxe4NXGEjcM74igkC6z0_1inrvkFQWXXCQ-geaDQf0",
   defaultGtmId: "GTM-T63XBR6K",
   gtmId: "GTM-T63XBR6K",
-  // Social links flagged for Webntric confirmation before activating additional profiles
+  // Verified official Webntric social media profiles
   socialLinks: [
     {
       name: "LinkedIn",
-      href: "https://linkedin.com/company/webntric",
-      active: true,
-    },
-    {
-      name: "X (Twitter)",
-      href: "https://x.com/webntric",
+      href: "https://www.linkedin.com/company/webntric",
       active: true,
     },
     {
       name: "Facebook",
-      href: "https://facebook.com/webntric",
+      href: "https://www.facebook.com/webntric",
       active: true,
     },
   ],

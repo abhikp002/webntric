@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, X, ArrowRight } from "lucide-react";
+import { ChevronDown, Menu, X, ArrowRight, Linkedin, Facebook } from "lucide-react";
 import ThemeToggle from "./theme-toggle";
 import Logo from "./logo";
 import {
@@ -851,6 +851,37 @@ export default function Navbar() {
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              {/* Mobile Social Links */}
+              <div className="pt-4 border-t border-border flex flex-col gap-2.5">
+                <span className="text-xs font-mono font-semibold uppercase text-muted-foreground">
+                  Connect on Social Media:
+                </span>
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://www.linkedin.com/company/webntric"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label="Webntric on LinkedIn"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary border border-border text-xs font-semibold text-foreground hover:text-primary transition-colors"
+                  >
+                    <Linkedin className="h-3.5 w-3.5 text-[#0077b5]" aria-hidden="true" />
+                    <span>LinkedIn</span>
+                  </a>
+                  <a
+                    href="https://www.facebook.com/webntric"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label="Webntric on Facebook"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary border border-border text-xs font-semibold text-foreground hover:text-primary transition-colors"
+                  >
+                    <Facebook className="h-3.5 w-3.5 text-[#1877f2]" aria-hidden="true" />
+                    <span>Facebook</span>
+                  </a>
+                </div>
               </div>
             </nav>
           </div>
