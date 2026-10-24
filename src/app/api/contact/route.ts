@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { validateContactForm } from "@/lib/validation";
+import { sendContactFormEmails } from "@/lib/email";
 
 export async function POST(request: Request) {
   try {
@@ -22,6 +23,16 @@ export async function POST(request: Request) {
       submittedAt: new Date().toISOString(),
       source: "webntric.com/contact",
     };
+
+    // Send email notification and client confirmation via Gmail SMTP (info@webntric.com)
+    try {
+      await sendContactFormEmails(validation.data);
+    } catch (emailError) {
+      console.error(
+        "[Webntric Contact API] Email dispatch error:",
+        emailError
+      );
+    }
 
     // Optional webhook / email forwarding when CONTACT_WEBHOOK_URL is configured
     const webhookUrl = process.env.CONTACT_WEBHOOK_URL;
