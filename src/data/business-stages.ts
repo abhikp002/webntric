@@ -317,6 +317,11 @@ export const BUSINESS_STAGES_DATA: BusinessStagePageData[] = [
         href: "/services/mobile-app-development",
         reason: "Launch Android and iOS MVPs from a unified, maintainable codebase.",
       },
+      {
+        name: "Startup Technology Partnership",
+        href: "/startup-technology-partner",
+        reason: "Selective technology collaboration for promising startups without initial standard development charges.",
+      },
     ],
     relatedIndustries: [
       { name: "Education & Coaching", href: "/industries/education-and-coaching" },

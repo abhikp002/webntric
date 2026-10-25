@@ -541,6 +541,18 @@ export default function Navbar() {
           </div>
 
           <Link
+            href="/startup-technology-partner"
+            aria-current={pathname === "/startup-technology-partner" ? "page" : undefined}
+            className={`px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              pathname === "/startup-technology-partner"
+                ? "text-primary font-semibold"
+                : "text-foreground/85 hover:text-foreground hover:bg-secondary/60"
+            }`}
+          >
+            For Startups
+          </Link>
+
+          <Link
             href="/work"
             aria-current={pathname === "/work" ? "page" : undefined}
             className={`px-2 2xl:px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
@@ -677,6 +689,20 @@ export default function Navbar() {
                 </div>
                 <ArrowRight className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
               </a>
+
+              <Link
+                href="/startup-technology-partner"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between w-full p-3 rounded-lg bg-primary/10 border border-primary/30 text-foreground font-semibold text-xs"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="px-1.5 py-0.5 rounded bg-primary text-primary-foreground font-mono text-[9px] uppercase">
+                    Program
+                  </span>
+                  <span>Startup Technology Partner</span>
+                </div>
+                <ArrowRight className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+              </Link>
             </div>
 
             <nav aria-label="Mobile navigation" className="space-y-6">

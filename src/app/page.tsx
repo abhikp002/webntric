@@ -955,6 +955,48 @@ export default function HomePage() {
         </div>
       </AppleScrollSection>
 
+      {/* STARTUP TECHNOLOGY PARTNERSHIP SECTION */}
+      <AppleScrollSection className="section-padding border-b border-border bg-gradient-to-b from-card via-surface-muted/30 to-background">
+        <div className="container-editorial">
+          <AppleBentoCard className="p-8 sm:p-12 border border-primary/20 bg-gradient-to-br from-primary/[0.04] via-card to-card space-y-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+              <div className="space-y-4 max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary font-mono text-xs uppercase font-semibold">
+                  <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
+                  <span>Startup Technology Collaboration</span>
+                </div>
+                <h2 className="text-2xl sm:text-4xl font-bold text-foreground tracking-tight">
+                  Have the idea, but not the technology budget?
+                </h2>
+                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+                  Webntric works with selected startups that have a meaningful problem to solve, a clear business opportunity, and the commitment to build seriously. Where there is a strong fit, we may support the initial technology development without charging standard development fees.
+                </p>
+                <div className="text-xs text-muted-foreground flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  <span>Selective collaboration based on problem clarity, viability, and founder dedication.</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0 sm:w-auto w-full">
+                <Link
+                  href="/startup-technology-partner"
+                  className="apple-pill-primary px-6 py-3.5 text-sm font-semibold inline-flex items-center justify-center gap-2 text-center"
+                >
+                  Explore startup partnership
+                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                </Link>
+                <Link
+                  href="/startup-technology-partner#apply"
+                  className="apple-pill-secondary px-6 py-3.5 text-sm font-semibold inline-flex items-center justify-center gap-2 text-center"
+                >
+                  Submit your startup idea
+                </Link>
+              </div>
+            </div>
+          </AppleBentoCard>
+        </div>
+      </AppleScrollSection>
+
       {/* SECTION 9 & 10: SUPPORT PROMISE + DELIVERY STANDARDS & TRANSPARENCY */}
       <AppleScrollSection className="section-padding border-b border-border bg-surface-muted/40">
         <div className="container-editorial space-y-12">

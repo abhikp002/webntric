@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
         destination: "/privacy-policy",
         permanent: true,
       },
+      {
+        source: "/for-startups",
+        destination: "/startup-technology-partner",
+        permanent: true,
+      },
     ];
   },
 };

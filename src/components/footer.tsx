@@ -209,6 +209,15 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li className="pt-1">
+                <Link
+                  href="/startup-technology-partner"
+                  className="font-medium text-primary hover:underline transition-colors inline-flex items-center gap-1"
+                >
+                  <span>Startup Tech Partner</span>
+                  <span className="text-[10px]">★</span>
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -272,6 +281,14 @@ export default function Footer() {
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   Locations We Serve
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/startup-technology-partner"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  For Startups
                 </Link>
               </li>
               <li>

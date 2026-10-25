@@ -18,7 +18,12 @@ export type AnalyticsEventName =
   | "cta_click"
   | "download_started"
   | "blog_article_read"
-  | "scroll_depth_reached";
+  | "scroll_depth_reached"
+  | "startup_page_viewed"
+  | "startup_form_started"
+  | "startup_form_completed"
+  | "startup_form_success"
+  | "startup_form_error";
 
 export interface AnalyticsEventPayload {
   location?: string;
